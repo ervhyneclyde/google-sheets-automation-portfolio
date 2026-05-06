@@ -1,7 +1,7 @@
 # Automation & Systems Portfolio
 ### Ervhyne Jesalva
 
-This repository contains professional-grade automation solutions built primarily with **Google Apps Script**, **JavaScript**, and **Supabase**.
+This repository contains professional-grade automation solutions built primarily with **Google Apps Script** and **JavaScript**.
 
 ## Featured Projects
 
@@ -15,7 +15,7 @@ This repository contains professional-grade automation solutions built primarily
 - **Solution:** A script-driven engine managing concurrent entries for real-time reporting.
 - **Tech:** Google Apps Script.
 
-## Skills Demonstrated
+### Includes:
 - API Integration 
 - Custom Web App Deployment
 - Real-time Database Management
