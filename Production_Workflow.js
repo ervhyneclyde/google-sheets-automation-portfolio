@@ -1,18 +1,19 @@
 const CONFIG = {
-  SHEET_NAME: 'Tab Name',
+  SHEET_NAME: 'YOUR_SHEET_NAME_HERE',
   SHEET_ID: SpreadsheetApp.getActiveSpreadsheet().getId(),
   WEB_APP_URL: "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE",
   
-  MAIN_RECEIVER: "email@gmail.com",
-  CC_LIST: "member1@gmail.com",
-  BCC_LIST: "member2@gmail.com",
+  MAIN_RECEIVER: "primary_recipient@example.com",
+  CC_LIST: "cc_user1@example.com, cc_user2@example.com",
+  BCC_LIST: "bcc_user1@example.com, bcc_user2@example.com",
 
-  VC: ["Name"],
-  AVCS: ["Name 1"],
-  ASSOCS: ["Name 2"],
+  VC: ["VC_NAME_HERE"],
+  AVCS: ["AVC_NAME_1", "AVC_NAME_2"],
+  ASSOCS: ["ASSOC_NAME_1", "ASSOC_NAME_2", "ASSOC_NAME_3"],
 
-  HEADER_IMG: "IMAGE_URL_HERE",
-  FOOTER_IMG: "IMAGE_URL_HERE"}
+  HEADER_IMG: "YOUR_HEADER_IMAGE_URL_HERE",
+  FOOTER_IMG: "YOUR_FOOTER_IMAGE_URL_HERE"
+};
 
 function sendHourlySummary() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -43,7 +44,7 @@ function sendHourlySummary() {
 
     if (timestamp.trim() === "") continue;
 
-    let rowId = "PROD_V6_" + rowNum + "_" + timestamp;
+    let rowId = "SUMMARY_PROD_V1_" + rowNum + "_" + timestamp;
     
     if (secondCheckStatus === "" && !props.getProperty(rowId)) {
       newSubmissions.push({
@@ -87,11 +88,11 @@ function compileAndSendSummary(submissions) {
           <span style="font-size: 11px; color: #999;">Type: ${sub.type}</span>
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; background-color: #fafafa; vertical-align: top;">
-          <div style="font-size: 9px; font-weight: bold; margin-bottom: 5px; color: #555;">1ST CHECK (ASSOCS)</div>
+          <div style="font-size: 9px; font-weight: bold; margin-bottom: 5px; color: #555;">1ST CHECK</div>
           ${assocButtons}
         </td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; vertical-align: top;">
-          <div style="font-size: 9px; font-weight: bold; margin-bottom: 5px; color: #004d40;">2ND CHECK (VC/AVCS)</div>
+          <div style="font-size: 9px; font-weight: bold; margin-bottom: 5px; color: #004d40;">2ND CHECK</div>
           ${vcButton}
           <div style="margin-top: 5px;">${avcButtons}</div>
         </td>
@@ -102,11 +103,11 @@ function compileAndSendSummary(submissions) {
     <div style="max-width: 1000px; margin: auto; border: 1px solid #ddd; border-radius: 8px; font-family: Arial, sans-serif;">
       <img src="${CONFIG.HEADER_IMG}" style="width: 100%; display: block;">
       <div style="padding: 20px;">
-        <h2 style="color: #004d40;">Submission Queue</h2>
+        <h2 style="color: #004d40;">Submission Queue Summary</h2>
         <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
           <tr style="background-color: #f8f8f8;">
             <th style="padding: 10px; border-bottom: 2px solid #004d40; text-align: center;">Row</th>
-            <th style="padding: 10px; border-bottom: 2px solid #004d40; text-align: left;">Activity Details</th>
+            <th style="padding: 10px; border-bottom: 2px solid #004d40; text-align: left;">Details</th>
             <th style="padding: 10px; border-bottom: 2px solid #004d40; text-align: left;">1st Check</th>
             <th style="padding: 10px; border-bottom: 2px solid #004d40; text-align: left;">2nd Check</th>
           </tr>
@@ -116,8 +117,8 @@ function compileAndSendSummary(submissions) {
       <img src="${CONFIG.FOOTER_IMG}" style="width: 100%; display: block;">
     </div>`;
 
-  GmailApp.sendEmail(CONFIG.MAIN_RECEIVER, `Update: ${submissions.length} New Items`, "", {
-    name: "Bot",
+  GmailApp.sendEmail(CONFIG.MAIN_RECEIVER, `Queue Update: ${submissions.length} New Items`, "", {
+    name: "Notification Bot",
     cc: CONFIG.CC_LIST,
     bcc: CONFIG.BCC_LIST,
     htmlBody: htmlBody
@@ -155,7 +156,7 @@ function doGet(e) {
       cellName.setValue(name);
       cellDate.setValue(new Date());
       
-      const redirectUrl = `docs_link#gid=${gid}&range=A${row}`;
+      const redirectUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/edit#gid=${gid}&range=A${row}`;
       
       return HtmlService.createHtmlOutput(`
         <html>
@@ -182,5 +183,5 @@ function doGet(e) {
 function resetMemory() {
   const props = PropertiesService.getScriptProperties();
   const keys = props.getKeys();
-  keys.forEach(key => { if(key.includes("PROD_V6_")) props.deleteProperty(key); });
+  keys.forEach(key => { if(key.includes("SUMMARY_PROD_V1_")) props.deleteProperty(key); });
 }
